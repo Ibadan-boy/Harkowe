@@ -7,6 +7,7 @@ import BlockTools from './Menu/BlockToolsMenu';
 import Insert from './Menu/Insert';
 import Link from '@tiptap/extension-link';
 import AllInsert from './AllInsert';
+import AllTextFormatting from './Menu/AllTextFormatting';
 
 const extensions = [
   StarterKit,
@@ -71,13 +72,11 @@ const MyEditor = () => {
 
   return (
     <>
-      <div>
-        <TextFormattingMenu editor={editor} />
+      
+        <AllTextFormatting editor={editor} />
         <BlockTools editor={editor} />
         <AllInsert editor={editor} linkiImage={addImage} />
         
-      </div>
-      
       {/* Global styles to remove outlines */}
       <style
         dangerouslySetInnerHTML={{
