@@ -2,24 +2,19 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useCallback, useEffect } from 'react';
 import Image from '@tiptap/extension-image';
-import TextFormattingMenu from './Menu/TextFormattingMenu';
-import BlockTools from './Menu/BlockToolsMenu';
-import Insert from './Menu/Insert';
 import Link from '@tiptap/extension-link';
-import AllInsert from './AllInsert';
-import AllTextFormatting from './Menu/AllTextFormatting';
+import AllMenu from './Menu/AllMenu';
 
 const extensions = [
   StarterKit,
   Image.configure({
-  inline: true,
-  allowBase64: true,
-  HTMLAttributes: {
-    class: 'max-w-full h-auto rounded-md shadow',
-    style: 'max-width: 400px;',
-  },
-}),
-,
+    inline: true,
+    allowBase64: true,
+    HTMLAttributes: {
+      class: 'max-w-full h-auto rounded-md shadow',
+      style: 'max-width: 400px;',
+    },
+  }),
   Link.configure({
     autolink: true,
     openOnClick: false,
@@ -34,10 +29,9 @@ const extensions = [
 const MyEditor = () => {
   const editor = useEditor({
     extensions,
-    content: '', // Leave blank; we'll load from localStorage later
+    content: '',
   });
 
-  // Load content from localStorage once the editor is ready
   useEffect(() => {
     const savedContent = localStorage.getItem('editorContent');
     if (editor && savedContent) {
@@ -45,7 +39,6 @@ const MyEditor = () => {
     }
   }, [editor]);
 
-  // Save content to localStorage on every update
   useEffect(() => {
     if (!editor) return;
 
@@ -55,16 +48,13 @@ const MyEditor = () => {
     };
 
     editor.on('update', saveContent);
-
-    return () => editor.off('update', saveContent); // clean up
+    return () => editor.off('update', saveContent);
   }, [editor]);
 
-  // Add image functionality
   const addImage = useCallback(() => {
     const url = window.prompt('URL');
     if (url) {
       editor.chain().focus().setImage({ src: url }).run();
-      return;
     }
   }, [editor]);
 
@@ -72,18 +62,16 @@ const MyEditor = () => {
 
   return (
     <>
-      
-        <AllTextFormatting editor={editor} />
-        <BlockTools editor={editor} />
-        <AllInsert editor={editor} linkiImage={addImage} />
-        
-      {/* Global styles to remove outlines */}
       <style
         dangerouslySetInnerHTML={{
           __html: `
           .tiptap-no-outline .ProseMirror {
             outline: none;
             border: none;
+            font-family: 'Atkinson Hyperlegible', sans-serif;
+            font-size: 1.1rem;
+            line-height: 1.75;
+            color: #374151;
           }
           .tiptap-no-outline .ProseMirror:focus {
             outline: none;
@@ -97,14 +85,20 @@ const MyEditor = () => {
         }}
       />
 
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8 px-4 font-writing relative">
+        <div className="max-w-7xl mx-auto">
+          {/* Editor area - takes full width without menu constraints */}
+          <div className="bg-white p-8 rounded-lg shadow border border-gray-200 prose prose-lg focus:outline-none max-w-none">
+            <EditorContent
+              editor={editor}
+              className="tiptap-no-outline outline-none focus:outline-none [&_.ProseMirror]:outline-none [&_.ProseMirror]:border-none [&_.ProseMirror:focus]:outline-none [&_.ProseMirror]:font-writing [&_.ProseMirror]:min-h-[700px] [&_.ProseMirror]:leading-relaxed [&_.ProseMirror]:text-gray-700 rounded-md"
+            />
+          </div>
+        </div>
 
-        
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8 px-4">
-        <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow border border-gray-200 prose prose-lg focus:outline-none">
-          <EditorContent
-            editor={editor}
-            className="tiptap-no-outline outline-none focus:outline-none [&_.ProseMirror]:outline-none [&_.ProseMirror]:border-none [&_.ProseMirror:focus]:outline-none [&_.ProseMirror]:min-h-[700px] [&_.ProseMirror]:leading-relaxed [&_.ProseMirror]:text-gray-700 rounded-md"
-          />
+        {/* Menu positioned as a floating element on the left side, slightly higher than center */}
+        <div className="fixed left-8 top-[40%] transform -translate-y-1/2 z-50">
+          <AllMenu editor={editor} />
         </div>
       </div>
     </>
@@ -112,3 +106,4 @@ const MyEditor = () => {
 };
 
 export default MyEditor;
+

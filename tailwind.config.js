@@ -4,7 +4,12 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+  extend: {
+    fontFamily: {
+      writing: ['"Atkinson Hyperlegible"', 'sans-serif'],
+      calm: ['"Lexend Deca"', 'sans-serif'],
+    },
   },
+},
   plugins: [],
 };
