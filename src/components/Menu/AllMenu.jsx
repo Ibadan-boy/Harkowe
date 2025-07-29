@@ -3,8 +3,9 @@ import { Menu } from "lucide-react";
 import TextFormattingMenu from "./TextFormattingMenu";
 import BlockTools from "./BlockToolsMenu";
 import Insert from "./Insert";
+import Utilities from "./Utilities";
 
-export default function AllMenu({ editor }) {
+export default function AllMenu({ editor, onWordCount }) {
   const [showMenu, setShowMenu] = useState(false);
   const toggleMenu = () => setShowMenu((prev) => !prev);
   if (!editor) return null;
@@ -16,10 +17,10 @@ export default function AllMenu({ editor }) {
         className="
           w-12 h-12 flex items-center justify-center
           rounded-full text-gray-600 bg-white
-          hover:bg-blue-50 hover:text-blue-600
-          active:bg-blue-100
+          hover:bg-green-300 hover:text-green-600
+          active:bg-green-100
           transition-all duration-200
-          focus:outline-none focus:ring-2 focus:ring-blue-500/20
+          focus:outline-none focus:ring-2 focus:ring-green-500/20
           shadow-lg border border-gray-200
         "
         aria-label="Menu"
@@ -33,6 +34,11 @@ export default function AllMenu({ editor }) {
           <TextFormattingMenu editor={editor} />
           <BlockTools editor={editor} />
           <Insert editor={editor} />
+          <Utilities
+            onUndo={() => editor.chain().focus().undo().run()}
+            onRedo={() => editor.chain().focus().redo().run()}
+            onWordCount={onWordCount}
+          />
         </div>
       )}
     </div>

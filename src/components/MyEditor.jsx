@@ -4,6 +4,8 @@ import { useCallback, useEffect } from 'react';
 import Image from '@tiptap/extension-image';
 import Link from '@tiptap/extension-link';
 import AllMenu from './Menu/AllMenu';
+import WordCount from './WordCount';
+import { useState } from 'react';
 
 const extensions = [
   StarterKit,
@@ -58,6 +60,10 @@ const MyEditor = () => {
     }
   }, [editor]);
 
+  const [ showWordCount, setShowWordCount ] = useState(false);
+
+  const toggleWordCount = () => setShowWordCount((prev) => !prev);
+
   if (!editor) return null;
 
   return (
@@ -68,6 +74,7 @@ const MyEditor = () => {
           .tiptap-no-outline .ProseMirror {
             outline: none;
             border: none;
+            margin: 1.5rem;
             font-family: 'Atkinson Hyperlegible', sans-serif;
             font-size: 1.1rem;
             line-height: 1.75;
@@ -86,21 +93,30 @@ const MyEditor = () => {
       />
 
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8 px-4 font-writing relative">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           {/* Editor area - takes full width without menu constraints */}
-          <div className="bg-white p-8 rounded-lg shadow border border-gray-200 prose prose-lg focus:outline-none max-w-none">
-            <EditorContent
-              editor={editor}
-              className="tiptap-no-outline outline-none focus:outline-none [&_.ProseMirror]:outline-none [&_.ProseMirror]:border-none [&_.ProseMirror:focus]:outline-none [&_.ProseMirror]:font-writing [&_.ProseMirror]:min-h-[700px] [&_.ProseMirror]:leading-relaxed [&_.ProseMirror]:text-gray-700 rounded-md"
-            />
+          <div className="max-w-5xl mx-auto relative">
+            {/* Editor area */}
+            <div className="bg-white p-8 shadow border border-gray-200 prose prose-lg focus:outline-none max-w-none">
+              <EditorContent
+                editor={editor}
+                className="tiptap-no-outline outline-none focus:outline-none [&_.ProseMirror]:outline-none [&_.ProseMirror]:border-none [&_.ProseMirror:focus]:outline-none [&_.ProseMirror]:font-writing [&_.ProseMirror]:min-h-[800px] [&_.ProseMirror]:leading-relaxed [&_.ProseMirror]:text-gray-500"
+              />
+            </div>
           </div>
         </div>
 
         {/* Menu positioned as a floating element on the left side, slightly higher than center */}
-        <div className="fixed left-8 top-[40%] transform -translate-y-1/2 z-50">
-          <AllMenu editor={editor} />
+        <div className="fixed left-8 top-[20%] transform -translate-y-1/2 z-50">
+          <AllMenu editor={editor} onWordCount={toggleWordCount}/>
         </div>
       </div>
+
+      {/* Word Count positioned at bottom right */}
+      { showWordCount && <div className="fixed bottom-4 left-8 z-50 bg-gray-300 backdrop-blur px-3 py-1 rounded-md shadow text-sm text-gray-600">
+        <WordCount editor={editor} />
+      </div>}
+
     </>
   );
 };

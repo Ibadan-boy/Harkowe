@@ -1,4 +1,4 @@
-import Insert from "./Menu/Insert";
+import Insert from "./Insert";
 import { useState } from "react";
 import { Plus } from "lucide-react";
 
