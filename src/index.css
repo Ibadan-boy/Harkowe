@@ -43,3 +43,9 @@
   padding: 0.2em 0.4em;
   border-radius: 4px;
 }
+
+hr {
+  border: none;
+  border-top: 2px solid #e0e0e0;
+  margin: 2rem 0;
+}

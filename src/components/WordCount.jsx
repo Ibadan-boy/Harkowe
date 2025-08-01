@@ -3,6 +3,10 @@ import { useState, useEffect } from "react"
 export default function WordCount({ editor }){
 
     const [wordCount, setWordCount] = useState(0);
+    const [ showOtherCounts, setShowOtherCounts ] = useState(false);
+
+    const toggleOtherCounts = () => setShowOtherCounts((prev) => !prev);
+
     useEffect(() => {
         if (!editor) return;
         const updateWordCount = () => {
@@ -17,18 +21,22 @@ export default function WordCount({ editor }){
 
     return (
         <>
-        <div className="text-sm text-gray-600">
+        <div onClick={toggleOtherCounts} className="text-sm cursor-pointer text-gray-600">
             <span className="font-semibold">{wordCount} words</span>
         </div>
-        {/* <div className="text-sm text-gray-600">
-            Character Count: <span className="font-semibold">{editor.getText().length}</span>
-        </div>
-        <div className="text-sm text-gray-600">
-            Paragraph Count: <span className="font-semibold">{editor.getText().split('\n').filter(p => p.trim()).length}</span>
-        </div>
-        <div className="text-sm text-gray-600">
-            Line Count: <span className="font-semibold">{editor.getText().split('\n').length}</span>
-        </div> */}
+
+        { showOtherCounts && <div>
+            <div className="text-sm text-gray-600">
+                Character Count: <span className="font-semibold">{editor.getText().length}</span>
+            </div>
+            <div className="text-sm text-gray-600">
+                Paragraph Count: <span className="font-semibold">{editor.getText().split('\n').filter(p => p.trim()).length}</span>
+            </div>
+            <div className="text-sm text-gray-600">
+                Line Count: <span className="font-semibold">{editor.getText().split('\n').length}</span>
+            </div>
+        </div>}
+        
         </>
     )
 }

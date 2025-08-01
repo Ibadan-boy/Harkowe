@@ -5,7 +5,7 @@ import BlockTools from "./BlockToolsMenu";
 import Insert from "./Insert";
 import Utilities from "./Utilities";
 
-export default function AllMenu({ editor, onWordCount }) {
+export default function AllMenu({ editor, onWordCount, onRemoveBorder, enabled, onToggle }) {
   const [showMenu, setShowMenu] = useState(false);
   const toggleMenu = () => setShowMenu((prev) => !prev);
   if (!editor) return null;
@@ -24,7 +24,7 @@ export default function AllMenu({ editor, onWordCount }) {
           shadow-lg border border-gray-200
         "
         aria-label="Menu"
-        title="Menu (Ctrl+M)"
+        title="Menu"
       >
         <Menu />
       </button>
@@ -38,6 +38,9 @@ export default function AllMenu({ editor, onWordCount }) {
             onUndo={() => editor.chain().focus().undo().run()}
             onRedo={() => editor.chain().focus().redo().run()}
             onWordCount={onWordCount}
+            onRemoveBorder={onRemoveBorder}
+            enabled={enabled}
+            onToggle={onToggle}
           />
         </div>
       )}

@@ -1,6 +1,7 @@
-import { Wrench, Tally5, Undo2, Redo2 } from "lucide-react";
+import { Wrench, Tally5, Undo2, Redo2, SquareDashed } from "lucide-react";
+import AiWhisperToggle from "../AiWhisperToggle";
 
-export default function Utilities({ onUndo, onRedo, onWordCount }) {
+export default function Utilities({ onUndo, onRedo, onWordCount, onRemoveBorder, enabled, onToggle }) {
   const baseButton = `
     w-10 h-10 flex items-center justify-center
     rounded-full border border-gray-300
@@ -12,9 +13,9 @@ export default function Utilities({ onUndo, onRedo, onWordCount }) {
   return (
     <div className="flex gap-2 p-2 bg-slate-50 rounded-md">
       {/* Settings / Tools */}
-      <button className={baseButton} title="Settings">
-        <Wrench size={20} strokeWidth={1.5} />
-      </button>
+      
+        <AiWhisperToggle enabled={enabled} onToggle={onToggle}/>
+      
 
       {/* Word Count or Metrics */}
       <button className={baseButton}
@@ -40,6 +41,15 @@ export default function Utilities({ onUndo, onRedo, onWordCount }) {
         title="Redo (Ctrl+Shift+Z)"
       >
         <Redo2 size={20} strokeWidth={1.5} />
+      </button>
+
+      {/* Remove border */}
+      <button
+        onClick={onRemoveBorder}
+        className={baseButton}
+        title="Remove Border"
+      >
+        <SquareDashed size={20} strokeWidth={1.5} />
       </button>
     </div>
   );
