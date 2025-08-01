@@ -64,7 +64,7 @@ const MyEditor = () => {
     return () => editor.off('update', saveContent);
   }, [editor]);
 
-  // 👇 Trigger AI suggestion after typing stops
+  //  Trigger AI suggestion after typing stops
   useEffect(() => {
     if (!editor) return;
 
@@ -83,7 +83,7 @@ const MyEditor = () => {
     return () => editor.off('update', handleTyping);
   }, [editor, triggerSuggestion]);
 
-  // 👇 Listen for Tab key to insert suggestion
+  //  Listen for Tab key to insert suggestion
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === 'Tab' && visible && suggestion) {
