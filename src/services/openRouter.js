@@ -10,7 +10,7 @@ export async function askOpenRouter(prompt) {
       "X-Title": "YOUR_APP_NAME",       // Replace with your app's name
     },
     body: JSON.stringify({
-      model: "google/gemma-3-4b-it:free",
+      model: "cognitivecomputations/dolphin3.0-r1-mistral-24b:free",
       messages: [
         {
           role: "user",
@@ -22,6 +22,8 @@ export async function askOpenRouter(prompt) {
       // max_tokens: 1000,
     }),
   });
+
+  //console.log(import.meta.env.VITE_OPENROUTER_KEY)
 
   const data = await response.json();
 

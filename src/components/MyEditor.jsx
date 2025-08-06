@@ -64,7 +64,7 @@ const MyEditor = () => {
     return () => editor.off('update', saveContent);
   }, [editor]);
 
-  // 👇 Trigger AI suggestion after typing stops
+  //  Trigger AI suggestion after typing stops
   useEffect(() => {
     if (!editor) return;
 
@@ -83,7 +83,7 @@ const MyEditor = () => {
     return () => editor.off('update', handleTyping);
   }, [editor, triggerSuggestion]);
 
-  // 👇 Listen for Tab key to insert suggestion
+  //  Listen for Tab key to insert suggestion
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === 'Tab' && visible && suggestion) {
@@ -139,12 +139,24 @@ const MyEditor = () => {
           </div>
         </div>
 
-        <div className="fixed left-8 top-[20%] transform -translate-y-1/2 z-50">
+        {/* Desktop Menu */}
+        <div className="hidden lg:block fixed left-8 top-[20%] transform -translate-y-1/2 z-40">
           <AllMenu
             editor={editor}
             onWordCount={toggleWordCount}
             onRemoveBorder={toggleRemoveBorder}
           />
+        </div>
+
+        {/* Mobile Menu */}
+        <div className="lg:hidden fixed bottom-20 left-1/2 transform -translate-x-1/2 z-50">
+          <div className="flex flex-col-reverse items-center">
+            <AllMenu
+              editor={editor}
+              onWordCount={toggleWordCount}
+              onRemoveBorder={toggleRemoveBorder}
+            />
+          </div>
         </div>
       </div>
 

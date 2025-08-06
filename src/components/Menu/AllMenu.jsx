@@ -30,7 +30,17 @@ export default function AllMenu({ editor, onWordCount, onRemoveBorder, enabled, 
       </button>
 
       {showMenu && (
-        <div className="absolute left-full ml-4 top-0 z-50 bg-white p-3 rounded-lg shadow-xl border border-gray-200 space-y-3 min-w-max">
+        <div
+          className="
+            absolute 
+            bottom-full mb-4 
+            left-1/2 -translate-x-1/2
+            bg-white p-3 rounded-lg shadow-xl border border-gray-200
+            space-y-3 min-w-max z-40
+
+            lg:bottom-auto lg:top-0 lg:left-full lg:ml-4 lg:translate-x-0
+          "
+        >
           <TextFormattingMenu editor={editor} />
           <BlockTools editor={editor} />
           <Insert editor={editor} />

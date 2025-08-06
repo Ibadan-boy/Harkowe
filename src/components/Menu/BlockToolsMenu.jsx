@@ -33,7 +33,7 @@ export default function BlockTools({ editor }) {
           editor.isActive("heading", { level: 1 }) ||
           editor.isActive("heading", { level: 2 }) ||
           editor.isActive("heading", { level: 3 })
-            ? "ring-2 ring-blue-300 text-blue-700"
+            ? "ring-2 ring-green-300 text-green-700"
             : ""
         }`}
         aria-label="Heading formatting"
