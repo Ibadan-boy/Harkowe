@@ -2,13 +2,14 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
 import Link from '@tiptap/extension-link';
-
+import { db } from '../services/firebase';
+import { doc, setDoc } from 'firebase/firestore';
 import { useEffect, useCallback, useRef, useState } from 'react';
-
 import AllMenu from './Menu/AllMenu';
 import WordCount from './WordCount';
 import AiWhisperBox from './AiWhisperBox';
 import { useWhisperAI } from './hooks/useWhisperAi';
+import { debounce } from 'lodash';
 
 const extensions = [
   StarterKit,
@@ -31,7 +32,7 @@ const extensions = [
   }),
 ];
 
-const MyEditor = () => {
+const MyEditor = ({ title }) => {
   const editor = useEditor({
     extensions,
     content: '',
@@ -54,15 +55,40 @@ const MyEditor = () => {
     }
   }, [editor]);
 
+  //const titleRef = useRef();
+
+  //save contents to Firestore
+  const saveToFirestore = useCallback(
+    debounce(
+      async (content)=> {
+        //const title = titleRef.current?.getTitle() || '';
+        try{
+          const docRef = doc(db, 'documents', 'myDoc-ID') //defines the reference we want to write to
+          //console.log("Saving to Firestore:", content);
+          await setDoc(
+            docRef, {
+              title: title || "Untitled",
+              content,
+              updatedAt: new Date(),
+            });
+          //console.log ('Saved to Firestore', title)
+        } catch(error){
+          console.error('Error saving to Firestore', error)
+        }
+      }, 1000),
+    [title]
+  )
+
   useEffect(() => {
     if (!editor) return;
     const saveContent = () => {
       const html = editor.getHTML();
       localStorage.setItem('editorContent', html);
+      saveToFirestore(html)
     };
     editor.on('update', saveContent);
     return () => editor.off('update', saveContent);
-  }, [editor]);
+  }, [editor, saveToFirestore]);
 
   //  Trigger AI suggestion after typing stops
   useEffect(() => {

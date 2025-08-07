@@ -1,31 +1,30 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from "react";
 
-export default function TitleHeader() {
-  const [title, setTitle] = useState('');
+export default function TitleHeader({ title, setTitle }) {
   const [isEditing, setIsEditing] = useState(true);
   const inputRef = useRef(null);
 
-  // Load saved title on component mount
   useEffect(() => {
-    const savedTitle = localStorage.getItem('editor-title');
+    const savedTitle = localStorage.getItem("editor-title");
     if (savedTitle) {
       setTitle(savedTitle);
-      setIsEditing(false); // Assume title already set, no need to edit
-    }
-  }, []);
-
-  // Save to localStorage when editing ends
-  const handleBlur = () => {
-    if (title.trim() !== '') {
-      localStorage.setItem('editor-title', title.trim());
       setIsEditing(false);
+    }
+  }, [setTitle]);
+
+  const handleBlur = () => {
+    if (title.trim() !== "") {
+      localStorage.setItem("editor-title", title.trim());
+      setIsEditing(false);
+      console.log(title)
     }
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault(); // prevents form submission or new line
-      inputRef.current.blur(); // triggers blur handler to save
+    if (e.key === "Enter") {
+      e.preventDefault();
+      inputRef.current.blur();
+      console.log(title)
     }
   };
 

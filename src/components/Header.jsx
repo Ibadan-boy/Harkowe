@@ -1,7 +1,7 @@
 import imgHeader from '../assets/file-text.svg';
 import TitleHeader from './TitleHeader';
 
-export default function Header() {
+export default function Header({ title, setTitle }) {
   return (
     <header className="bg-white flex flex-col sm:flex-row py-4 px-6 sticky top-0 z-50">
       {/* Mobile Layout (stacked) */}
@@ -21,7 +21,7 @@ export default function Header() {
         
         {/* Title header centered */}
         <div className="flex justify-center">
-          <TitleHeader />
+          <TitleHeader title={title} setTitle={setTitle}/>
         </div>
       </div>
 
@@ -40,7 +40,7 @@ export default function Header() {
         </div>
 
         <div className="absolute left-1/2 transform -translate-x-1/2">
-          <TitleHeader />
+          <TitleHeader title={title} setTitle={setTitle}/>
         </div>
       </div>
     </header>

@@ -4,6 +4,7 @@ import TextFormattingMenu from "./TextFormattingMenu";
 import BlockTools from "./BlockToolsMenu";
 import Insert from "./Insert";
 import Utilities from "./Utilities";
+import Home from "./GoToHome";
 
 export default function AllMenu({ editor, onWordCount, onRemoveBorder, enabled, onToggle }) {
   const [showMenu, setShowMenu] = useState(false);
@@ -41,6 +42,7 @@ export default function AllMenu({ editor, onWordCount, onRemoveBorder, enabled, 
             lg:bottom-auto lg:top-0 lg:left-full lg:ml-4 lg:translate-x-0
           "
         >
+          <Home/>
           <TextFormattingMenu editor={editor} />
           <BlockTools editor={editor} />
           <Insert editor={editor} />
@@ -52,6 +54,7 @@ export default function AllMenu({ editor, onWordCount, onRemoveBorder, enabled, 
             enabled={enabled}
             onToggle={onToggle}
           />
+          
         </div>
       )}
     </div>
