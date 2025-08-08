@@ -49,3 +49,38 @@ hr {
   border-top: 2px solid #e0e0e0;
   margin: 2rem 0;
 }
+
+html.dark header {
+  background-color: #064e3b; /* green-950 */
+  transition: background-color 0.3s ease;
+}
+
+html.dark .ProseMirror {
+  background-color: #064e3b; /* green-950 */
+  color: #d1fae5; /* green-100 */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+html.dark .ProseMirror a {
+  color: #86efac; /* green-300 for links */
+}
+
+html.dark .ProseMirror p {
+  color: #d1fae5; /* make paragraph text readable */
+}
+
+html.dark {
+  background-color: #064e3b; /* green-950 */
+  color: #d1fae5; /* green-100 */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+html {
+  background-color: white;
+  color: black;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+html.dark .titleHeading {
+  color: white;
+}

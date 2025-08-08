@@ -1,46 +1,61 @@
+// src/components/Header.jsx
 import imgHeader from '../assets/file-text.svg';
 import TitleHeader from './TitleHeader';
+import { SunMoon } from 'lucide-react';
+import { useDarkMode } from './ThemeChanger';
 
 export default function Header({ title, setTitle }) {
+  const { toggleTheme } = useDarkMode();
+
   return (
-    <header className="bg-white flex flex-col sm:flex-row py-4 px-6 sticky top-0 z-50">
-      {/* Mobile Layout (stacked) */}
+    <header className="flex flex-col sm:flex-row py-4 px-6 sticky top-0 z-50 font-calm bg-white transition-colors duration-300">
+      
+      {/* Mobile Layout */}
       <div className="flex flex-col sm:hidden space-y-3 w-full">
-        {/* Logo and company name centered */}
         <div className="flex items-center justify-center gap-4">
           <img
             src={imgHeader}
             alt="Harkowe company logo"
             className="w-9 h-9"
           />
-          <h1 className="text-2xl font-bold">
-            <span className="text-green-800">Har</span>
-            <span className="text-gray-600">kowe</span>
+          <h1 className="text-2xl font-bold font-writing text-green-800 dark:text-green-300">
+            <span className="text-green-800 dark:text-green-300">Har</span>
+            <span className="text-gray-600 dark:text-gray-300">kowe</span>
           </h1>
         </div>
-        
+
         {/* Title header centered */}
         <div className="flex justify-center">
-          <TitleHeader title={title} setTitle={setTitle}/>
+          <TitleHeader title={title} setTitle={setTitle} />
         </div>
       </div>
 
-      {/* Desktop Layout (original design) */}
-      <div className="hidden sm:flex w-full relative">
+      {/* Desktop Layout */}
+      <div className="hidden sm:flex w-full relative items-center">
         <div className="max-w-6xl flex items-center gap-4">
           <img
             src={imgHeader}
             alt="Harkowe company logo"
             className="w-9 h-9"
           />
-          <h1 className="text-2xl sm:text-3xl font-bold">
-            <span className="text-green-800">Har</span>
-            <span className="text-gray-600">kowe</span>
+          <h1 className="text-2xl sm:text-3xl font-bold font-writing text-green-800 dark:text-green-300">
+            <span className="text-green-800 dark:text-green-600">Har</span>
+            <span className="text-gray-600 dark:text-gray-300">kowe</span>
           </h1>
         </div>
 
-        <div className="absolute left-1/2 transform -translate-x-1/2">
-          <TitleHeader title={title} setTitle={setTitle}/>
+        <div className="flex items-baseline absolute left-1/2 transform -translate-x-1/2">
+          <TitleHeader title={title} setTitle={setTitle} />
+        </div>
+
+        <div className="absolute right-0">
+          <button
+            aria-label="Toggle theme"
+            onClick={toggleTheme}
+            className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-green-900 transition-colors duration-300"
+          >
+            <SunMoon className="cursor-pointer transition-transform duration-300 hover:rotate-180" />
+          </button>
         </div>
       </div>
     </header>

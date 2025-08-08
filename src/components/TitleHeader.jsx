@@ -49,7 +49,7 @@ export default function TitleHeader({ title, setTitle }) {
       ) : (
         <h1
           onClick={handleClick}
-          className="text-3xl text-gray-600 font-semibold cursor-pointer transition-colors"
+          className="text-3xl text-gray-600 titleHeading font-semibold cursor-pointer transition-colors"
         >
           {title}
         </h1>

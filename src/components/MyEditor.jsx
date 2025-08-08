@@ -144,26 +144,27 @@ const MyEditor = ({ title }) => {
           `,
         }}
       />
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8 px-4 font-writing relative">
-        <div className="max-w-5xl mx-auto">
-          <div className="max-w-5xl mx-auto relative">
-            <div
-              className={`p-8 prose prose-lg focus:outline-none max-w-none transition-all duration-200 relative
-              ${removeBorder ? '' : 'bg-white border border-gray-200 shadow'}`}
-              ref={editorRef}
-            >
-              <EditorContent
-                editor={editor}
-                className="tiptap-no-outline [&_.ProseMirror]:min-h-[800px] [&_.ProseMirror]:text-gray-500"
-              />
-              <AiWhisperBox
-                suggestion={suggestion}
-                visible={visible}
-                position={position}
-              />
-            </div>
+      <div className="min-h-screen transition-colors duration-300">
+      <div className="max-w-5xl mx-auto">
+        <div className="max-w-5xl mx-auto relative">
+          <div
+            className={`p-8 prose prose-lg focus:outline-none max-w-none transition-all duration-200 relative
+            ${removeBorder ? '' : 'border border-green-800 shadow'}
+            dark:prose-invert`}
+            ref={editorRef}
+          >
+            <EditorContent
+              editor={editor}
+              className="tiptap-no-outline [&_.ProseMirror]:min-h-[800px]"
+            />
+            <AiWhisperBox
+              suggestion={suggestion}
+              visible={visible}
+              position={position}
+            />
           </div>
         </div>
+      </div>
 
         {/* Desktop Menu */}
         <div className="hidden lg:block fixed left-8 top-[20%] transform -translate-y-1/2 z-40">
