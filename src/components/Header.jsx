@@ -59,7 +59,7 @@ export default function Header({ title, setTitle }) {
           <button
             aria-label="Toggle theme"
             onClick={toggleTheme}
-            className="p-2 rounded-full hover:bg-gray-200 transition-colors duration-300"
+            className="p-2 rounded-full hover:bg-green-800 transition-colors duration-300"
           >
             <SunMoon className="cursor-pointer transition-transform duration-300 hover:rotate-180" />
           </button>

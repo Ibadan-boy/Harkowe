@@ -1,4 +1,5 @@
 import AllEditor from "./components/AllEditor";
+import AllWritings from "./components/AllWritings";
 import AnimatedLanding from "./components/AnimatedLandingPage";
 import Login from "./components/Login";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -6,13 +7,16 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 const route = createBrowserRouter([
     {
-      path: 'home', index: true, element: <AnimatedLanding/>
+      index: true, element: <AnimatedLanding/>
     },
     {
       path: 'signup', element: <Login/>
     },
     {
       path: 'editor', element: <AllEditor/>
+    },
+    {
+      path: 'allwritings', element: <AllWritings/>
     }
 ])
 

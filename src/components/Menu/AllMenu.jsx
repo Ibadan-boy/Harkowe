@@ -4,12 +4,19 @@ import TextFormattingMenu from "./TextFormattingMenu";
 import BlockTools from "./BlockToolsMenu";
 import Insert from "./Insert";
 import Utilities from "./Utilities";
-import Home from "./GoToHome";
+import { useNavigate } from "react-router-dom";
+import GoHome from "./GoHome";
 
 export default function AllMenu({ editor, onWordCount, onRemoveBorder, enabled, onToggle }) {
   const [showMenu, setShowMenu] = useState(false);
+  const navigate = useNavigate();
   const toggleMenu = () => setShowMenu((prev) => !prev);
   if (!editor) return null;
+
+  function goHome(){
+    console.log('Clicked Home')
+    navigate('/allwritings')
+  }
 
   return (
     <div className="relative">
@@ -42,7 +49,7 @@ export default function AllMenu({ editor, onWordCount, onRemoveBorder, enabled, 
             lg:bottom-auto lg:top-0 lg:left-full lg:ml-4 lg:translate-x-0
           "
         >
-          <Home/>
+          <GoHome onClick={goHome}/>
           <TextFormattingMenu editor={editor} />
           <BlockTools editor={editor} />
           <Insert editor={editor} />
