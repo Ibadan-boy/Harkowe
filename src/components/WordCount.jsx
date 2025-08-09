@@ -21,11 +21,11 @@ export default function WordCount({ editor }){
 
     return (
         <>
-        <div onClick={toggleOtherCounts} className="text-sm cursor-pointer text-gray-600">
+        <div onClick={toggleOtherCounts} className="text-sm wordCount1 cursor-pointer text-gray-600">
             <span className="font-semibold">{wordCount} words</span>
         </div>
 
-        { showOtherCounts && <div>
+        { showOtherCounts && <div className="wordCount1">
             <div className="text-sm text-gray-600">
                 Character Count: <span className="font-semibold">{editor.getText().length}</span>
             </div>

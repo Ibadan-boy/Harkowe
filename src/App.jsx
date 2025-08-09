@@ -1,14 +1,27 @@
-import { useState } from "react";
-import MyEditor from "./components/MyEditor";
-import Header from "./components/Header";
+import AllEditor from "./components/AllEditor";
+import AnimatedLanding from "./components/AnimatedLandingPage";
+import Login from "./components/Login";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
+
+const route = createBrowserRouter([
+    {
+      path: 'home', index: true, element: <AnimatedLanding/>
+    },
+    {
+      path: 'signup', element: <Login/>
+    },
+    {
+      path: 'editor', element: <AllEditor/>
+    }
+])
 
 export default function App() {
-  const [title, setTitle] = useState("");
-
+  
   return (
     <>
-      <Header title={title} setTitle={setTitle} />
-      <MyEditor title={title} />
+      {/* <AllEditor/> */}
+      <RouterProvider router={route}/>
     </>
   );
 }

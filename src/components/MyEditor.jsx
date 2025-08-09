@@ -48,49 +48,51 @@ const MyEditor = ({ title }) => {
 
   const { suggestion, visible, triggerSuggestion, insertSuggestion } = useWhisperAI(editor, aiEnabled);
 
+  // Load editor content and border state from localStorage
   useEffect(() => {
     const savedContent = localStorage.getItem('editorContent');
     if (editor && savedContent) {
       editor.commands.setContent(savedContent);
     }
+
+    const savedBorderState = localStorage.getItem('removeBorder');
+    if (savedBorderState !== null) {
+      setRemoveBorder(savedBorderState === 'true');
+    }
   }, [editor]);
 
-  //const titleRef = useRef();
-
-  //save contents to Firestore
+  // Save contents to Firestore
   const saveToFirestore = useCallback(
     debounce(
-      async (content)=> {
-        //const title = titleRef.current?.getTitle() || '';
-        try{
-          const docRef = doc(db, 'documents', 'myDoc-ID') //defines the reference we want to write to
-          //console.log("Saving to Firestore:", content);
-          await setDoc(
-            docRef, {
-              title: title || "Untitled",
-              content,
-              updatedAt: new Date(),
-            });
-          //console.log ('Saved to Firestore', title)
-        } catch(error){
-          console.error('Error saving to Firestore', error)
+      async (content) => {
+        try {
+          const docRef = doc(db, 'documents', 'myDoc-ID');
+          await setDoc(docRef, {
+            title: title || 'Untitled',
+            content,
+            updatedAt: new Date(),
+          });
+        } catch (error) {
+          console.error('Error saving to Firestore', error);
         }
-      }, 1000),
+      },
+      1000
+    ),
     [title]
-  )
+  );
 
   useEffect(() => {
     if (!editor) return;
     const saveContent = () => {
       const html = editor.getHTML();
       localStorage.setItem('editorContent', html);
-      saveToFirestore(html)
+      saveToFirestore(html);
     };
     editor.on('update', saveContent);
     return () => editor.off('update', saveContent);
   }, [editor, saveToFirestore]);
 
-  //  Trigger AI suggestion after typing stops
+  // Trigger AI suggestion after typing stops
   useEffect(() => {
     if (!editor) return;
 
@@ -101,7 +103,7 @@ const MyEditor = ({ title }) => {
         const { from } = editor.state.selection;
         const coords = editor.view.coordsAtPos(from);
         setPosition({ top: coords.top + 24, left: coords.left });
-        if (triggerSuggestion) triggerSuggestion(); // safeguard
+        if (triggerSuggestion) triggerSuggestion();
       }, 5000);
     };
 
@@ -109,12 +111,12 @@ const MyEditor = ({ title }) => {
     return () => editor.off('update', handleTyping);
   }, [editor, triggerSuggestion]);
 
-  //  Listen for Tab key to insert suggestion
+  // Listen for Tab key to insert suggestion
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === 'Tab' && visible && suggestion) {
         event.preventDefault();
-        insertSuggestion(); // call the hook method to insert
+        insertSuggestion();
       }
     };
 
@@ -122,8 +124,14 @@ const MyEditor = ({ title }) => {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [visible, suggestion, insertSuggestion]);
 
-  const toggleWordCount = () => setShowWordCount(prev => !prev);
-  const toggleRemoveBorder = () => setRemoveBorder(prev => !prev);
+  const toggleWordCount = () => setShowWordCount((prev) => !prev);
+  const toggleRemoveBorder = () => {
+    setRemoveBorder((prev) => {
+      const newState = !prev;
+      localStorage.setItem('removeBorder', newState);
+      return newState;
+    });
+  };
 
   if (!editor) return null;
 
@@ -145,26 +153,26 @@ const MyEditor = ({ title }) => {
         }}
       />
       <div className="min-h-screen transition-colors duration-300">
-      <div className="max-w-5xl mx-auto">
-        <div className="max-w-5xl mx-auto relative">
-          <div
-            className={`p-8 prose prose-lg focus:outline-none max-w-none transition-all duration-200 relative
-            ${removeBorder ? '' : 'border border-green-800 shadow'}
-            dark:prose-invert`}
-            ref={editorRef}
-          >
-            <EditorContent
-              editor={editor}
-              className="tiptap-no-outline [&_.ProseMirror]:min-h-[800px]"
-            />
-            <AiWhisperBox
-              suggestion={suggestion}
-              visible={visible}
-              position={position}
-            />
+        <div className="max-w-5xl mx-auto">
+          <div className="max-w-5xl mx-auto relative">
+            <div
+              className={`p-8 prose prose-lg focus:outline-none max-w-none transition-all duration-200 relative
+              ${removeBorder ? '' : 'border border-gray-300 shadow'}
+              dark:prose-invert`}
+              ref={editorRef}
+            >
+              <EditorContent
+                editor={editor}
+                className="tiptap-no-outline [&_.ProseMirror]:min-h-[800px]"
+              />
+              <AiWhisperBox
+                suggestion={suggestion}
+                visible={visible}
+                position={position}
+              />
+            </div>
           </div>
         </div>
-      </div>
 
         {/* Desktop Menu */}
         <div className="hidden lg:block fixed left-8 top-[20%] transform -translate-y-1/2 z-40">
@@ -188,7 +196,7 @@ const MyEditor = ({ title }) => {
       </div>
 
       {showWordCount && (
-        <div className="fixed bottom-4 left-8 z-50 bg-gray-300 backdrop-blur px-3 py-1 rounded-md shadow text-sm text-gray-600">
+        <div className="fixed bottom-4 left-8 z-50 bg-gray-300 wordCount1 backdrop-blur px-3 py-1 rounded-md shadow text-sm text-gray-600">
           <WordCount editor={editor} />
         </div>
       )}

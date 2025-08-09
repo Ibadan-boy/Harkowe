@@ -84,3 +84,8 @@ html {
 html.dark .titleHeading {
   color: white;
 }
+
+html.dark .wordCount1{
+  background-color: #064e3b;
+  color: white;
+}
