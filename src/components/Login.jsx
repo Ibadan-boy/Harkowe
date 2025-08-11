@@ -20,7 +20,7 @@ export default function Login() {
     setLoading(true);
     try {
       await signInWithPopup(auth, googleProvider);
-      navigate("/editor");
+      navigate("/allwritings");
     } catch (err) {
       setError(err.message);
     } finally {
@@ -32,7 +32,7 @@ export default function Login() {
     setLoading(true);
     try {
       await signInWithPopup(auth, appleProvider);
-      navigate("/editor");
+      navigate("/allwritings");
     } catch (err) {
       setError(err.message);
     } finally {
@@ -49,7 +49,7 @@ export default function Login() {
       } else {
         await signInWithEmailAndPassword(auth, email, password);
       }
-      navigate("/editor");
+      navigate("/allwritings");
     } catch (err) {
       setError(err.message);
     } finally {

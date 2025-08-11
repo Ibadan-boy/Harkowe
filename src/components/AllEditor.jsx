@@ -25,7 +25,7 @@ export default function AllEditor() {
           setTitle(data.title || "");
           setIsNew(false);
         } else {
-          // New document — create in Firestore
+          //create new document in Firestore
           await setDoc(docRef, {
             title: "",
             content: "",

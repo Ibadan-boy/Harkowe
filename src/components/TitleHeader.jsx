@@ -1,19 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 
-/**
- * TitleHeader Component
- * ---------------------
- * Handles the editing and viewing of a document title.
- * - Shows placeholder for new documents.
- * - If user leaves without typing, saves as "Untitled".
- * - Titles are stored per document in localStorage.
- *
- * Props:
- *  - title (string): Current title state from parent.
- *  - setTitle (function): Updates title state in parent.
- *  - docID (string): Unique ID for the document.
- *  - isNew (boolean): True if this is a brand new document.
- */
+
 export default function TitleHeader({ title, setTitle, docID, isNew }) {
   const [isEditing, setIsEditing] = useState(isNew); // Start editing if new
   const inputRef = useRef(null);

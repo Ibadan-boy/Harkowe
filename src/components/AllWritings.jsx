@@ -83,7 +83,7 @@ export default function AllWritings() {
               className="relative p-4 bg-emerald-900 rounded-xl shadow-md hover:shadow-lg hover:bg-emerald-800 transition transform hover:-translate-y-1"
             >
               {/* Three dots menu button */}
-              <button className="absolute top-3 right-3 p-1 rounded-full hover:bg-green-600 transition">
+              <button className="absolute top-3 right-3 p-1 rounded-full hover:bg-emerald-700 transition">
                 <MoreVertical className="w-5 h-5 text-green-200" />
               </button>
 
