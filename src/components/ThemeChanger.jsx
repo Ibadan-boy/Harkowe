@@ -8,32 +8,26 @@ export const ThemeChanger = ({ children }) => {
     if (typeof window !== 'undefined') {
       const savedTheme = localStorage.getItem('theme');
       if (savedTheme) {
-        console.log('Loaded theme from localStorage:', savedTheme);
         return savedTheme === 'dark';
       }
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      console.log('System prefers dark:', prefersDark);
       return prefersDark;
     }
     return false; // Default to light for SSR
   });
 
   useEffect(() => {
-    console.log('Dark theme state:', darkTheme);
     if (darkTheme) {
       document.documentElement.classList.add('dark');
       localStorage.setItem('theme', 'dark');
-      console.log('Applied dark class');
     } else {
       document.documentElement.classList.remove('dark');
       localStorage.setItem('theme', 'light');
-      console.log('Removed dark class');
     }
   }, [darkTheme]);
 
   const toggleTheme = () => {
     setDarkTheme((prev) => {
-      console.log('Toggling theme from', prev, 'to', !prev);
       return !prev;
     });
   };

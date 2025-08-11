@@ -1,30 +1,45 @@
 import { useState, useRef, useEffect } from "react";
 
-export default function TitleHeader({ title, setTitle }) {
-  const [isEditing, setIsEditing] = useState(true);
+/**
+ * TitleHeader Component
+ * ---------------------
+ * Handles the editing and viewing of a document title.
+ * - Shows placeholder for new documents.
+ * - If user leaves without typing, saves as "Untitled".
+ * - Titles are stored per document in localStorage.
+ *
+ * Props:
+ *  - title (string): Current title state from parent.
+ *  - setTitle (function): Updates title state in parent.
+ *  - docID (string): Unique ID for the document.
+ *  - isNew (boolean): True if this is a brand new document.
+ */
+export default function TitleHeader({ title, setTitle, docID, isNew }) {
+  const [isEditing, setIsEditing] = useState(isNew); // Start editing if new
   const inputRef = useRef(null);
 
   useEffect(() => {
-    const savedTitle = localStorage.getItem("editor-title");
-    if (savedTitle) {
-      setTitle(savedTitle);
-      setIsEditing(false);
+    // Only try to load a saved title if this is not a brand new doc
+    if (!isNew) {
+      const savedTitle = localStorage.getItem(`editor-title-${docID}`);
+      if (savedTitle) {
+        setTitle(savedTitle);
+        setIsEditing(false);
+      }
     }
-  }, [setTitle]);
+  }, [setTitle, docID, isNew]);
 
   const handleBlur = () => {
-    if (title.trim() !== "") {
-      localStorage.setItem("editor-title", title.trim());
-      setIsEditing(false);
-      console.log(title)
-    }
+    const finalTitle = title.trim() === "" ? "Untitled" : title.trim();
+    localStorage.setItem(`editor-title-${docID}`, finalTitle);
+    setTitle(finalTitle);
+    setIsEditing(false);
   };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
       inputRef.current.blur();
-      console.log(title)
     }
   };
 

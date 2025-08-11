@@ -6,6 +6,7 @@ import Insert from "./Insert";
 import Utilities from "./Utilities";
 import { useNavigate } from "react-router-dom";
 import GoHome from "./GoHome";
+import AddNewWriting from "./AddNewWriting";
 
 export default function AllMenu({ editor, onWordCount, onRemoveBorder, enabled, onToggle }) {
   const [showMenu, setShowMenu] = useState(false);
@@ -49,7 +50,10 @@ export default function AllMenu({ editor, onWordCount, onRemoveBorder, enabled, 
             lg:bottom-auto lg:top-0 lg:left-full lg:ml-4 lg:translate-x-0
           "
         >
-          <GoHome onClick={goHome}/>
+          <div className="flex gap-1">
+            <GoHome onClick={goHome}/>
+            <AddNewWriting/>
+          </div>
           <TextFormattingMenu editor={editor} />
           <BlockTools editor={editor} />
           <Insert editor={editor} />

@@ -3,6 +3,7 @@ import AllWritings from "./components/AllWritings";
 import AnimatedLanding from "./components/AnimatedLandingPage";
 import Login from "./components/Login";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import EditorPage from "./components/EditorPage";
 
 
 const route = createBrowserRouter([
@@ -13,11 +14,11 @@ const route = createBrowserRouter([
       path: 'signup', element: <Login/>
     },
     {
-      path: 'editor', element: <AllEditor/>
+      path: 'editor/:id', element: <AllEditor/>
     },
     {
       path: 'allwritings', element: <AllWritings/>
-    }
+    },
 ])
 
 export default function App() {

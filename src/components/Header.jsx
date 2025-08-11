@@ -5,12 +5,12 @@ import { SunMoon } from 'lucide-react';
 import { useDarkMode } from './ThemeChanger';
 import { useNavigate } from 'react-router-dom';
 
-export default function Header({ title, setTitle }) {
+export default function Header({ title, setTitle, docID, isNew }) {
   const { toggleTheme } = useDarkMode();
   const navigate = useNavigate();
 
-  function handleNav(){
-    navigate('/home')
+  function handleNav() {
+    navigate('/home');
   }
 
   return (
@@ -32,7 +32,7 @@ export default function Header({ title, setTitle }) {
 
         {/* Title header centered */}
         <div className="flex justify-center">
-          <TitleHeader title={title} setTitle={setTitle} />
+          <TitleHeader title={title} setTitle={setTitle} docID={docID} isNew={isNew} />
         </div>
       </div>
 
@@ -45,14 +45,18 @@ export default function Header({ title, setTitle }) {
             className="w-9 h-9"
             onClick={handleNav}
           />
-          <h1 onClick={handleNav} className="text-2xl sm:text-3xl font-bold font-writing text-green-800 dark:text-green-300">
+          <h1
+            onClick={handleNav}
+            className="text-2xl sm:text-3xl font-bold font-writing text-green-800 dark:text-green-300"
+          >
             <span className="text-green-800 dark:text-green-600">Har</span>
             <span className="text-gray-600 dark:text-gray-300">kowe</span>
           </h1>
         </div>
 
+        {/* Title in center */}
         <div className="flex items-baseline absolute left-1/2 transform -translate-x-1/2">
-          <TitleHeader title={title} setTitle={setTitle} />
+          <TitleHeader title={title} setTitle={setTitle} docID={docID} isNew={isNew} />
         </div>
 
         <div className="absolute right-0">

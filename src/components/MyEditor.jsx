@@ -3,7 +3,7 @@ import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
 import Link from '@tiptap/extension-link';
 import { db } from '../services/firebase';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { useEffect, useCallback, useRef, useState } from 'react';
 import AllMenu from './Menu/AllMenu';
 import WordCount from './WordCount';
@@ -32,15 +32,14 @@ const extensions = [
   }),
 ];
 
-const MyEditor = ({ title }) => {
+const MyEditor = ({ title, docID }) => {
   const editor = useEditor({
     extensions,
-    content: '',
+    content: '', // starts empty until Firestore loads
   });
 
   const [showWordCount, setShowWordCount] = useState(false);
   const [removeBorder, setRemoveBorder] = useState(false);
-
   const [aiEnabled] = useState(true);
   const [position, setPosition] = useState({ top: 0, left: 0 });
   const editorRef = useRef(null);
@@ -48,46 +47,60 @@ const MyEditor = ({ title }) => {
 
   const { suggestion, visible, triggerSuggestion, insertSuggestion } = useWhisperAI(editor, aiEnabled);
 
-  // Load editor content and border state from localStorage
-  useEffect(() => {
-    const savedContent = localStorage.getItem('editorContent');
-    if (editor && savedContent) {
-      editor.commands.setContent(savedContent);
-    }
-
-    const savedBorderState = localStorage.getItem('removeBorder');
-    if (savedBorderState !== null) {
-      setRemoveBorder(savedBorderState === 'true');
-    }
-  }, [editor]);
-
-  // Save contents to Firestore
+  // Save contents to Firestore (debounced)
   const saveToFirestore = useCallback(
-    debounce(
-      async (content) => {
-        try {
-          const docRef = doc(db, 'documents', 'myDoc-ID');
-          await setDoc(docRef, {
+    debounce(async (content) => {
+      if (!docID) return;
+      try {
+        const docRef = doc(db, 'documents', docID);
+        await setDoc(
+          docRef,
+          {
             title: title || 'Untitled',
             content,
             updatedAt: new Date(),
-          });
-        } catch (error) {
-          console.error('Error saving to Firestore', error);
-        }
-      },
-      1000
-    ),
-    [title]
+            docID,
+          },
+          { merge: true }
+        );
+      } catch (error) {
+        console.error('Error saving to Firestore', error);
+      }
+    }, 1000),
+    [title, docID]
   );
 
+  // Load content from Firestore on mount/docID change
+  useEffect(() => {
+  async function loadFromFirestore() {
+    if (!docID || !editor) return;
+
+    try {
+      const snap = await getDoc(doc(db, 'documents', docID));
+      if (snap.exists()) {
+        const data = snap.data();
+        editor.commands.setContent(data.content || '');
+      } else {
+        console.warn(`Document ${docID} not found in Firestore`);
+      }
+    } catch (error) {
+      console.error('Error loading from Firestore', error);
+    }
+  }
+
+  loadFromFirestore();
+}, [docID, editor, title]);
+
+
+  // Save editor content to Firestore when updated
   useEffect(() => {
     if (!editor) return;
+
     const saveContent = () => {
       const html = editor.getHTML();
-      localStorage.setItem('editorContent', html);
       saveToFirestore(html);
     };
+
     editor.on('update', saveContent);
     return () => editor.off('update', saveContent);
   }, [editor, saveToFirestore]);
@@ -153,10 +166,10 @@ const MyEditor = ({ title }) => {
         }}
       />
       <div className="min-h-screen transition-colors duration-300">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-5xl mx-auto mt-8">
           <div className="max-w-5xl mx-auto relative">
             <div
-              className={`p-8 prose prose-lg focus:outline-none max-w-none transition-all duration-200 relative
+              className={`p-8 prose prose-lg focus:outline-none max-w-none dark:border-green-950/10 transition-all duration-200 relative
               ${removeBorder ? '' : 'border border-gray-300 shadow'}
               dark:prose-invert`}
               ref={editorRef}
@@ -165,32 +178,20 @@ const MyEditor = ({ title }) => {
                 editor={editor}
                 className="tiptap-no-outline [&_.ProseMirror]:min-h-[800px]"
               />
-              <AiWhisperBox
-                suggestion={suggestion}
-                visible={visible}
-                position={position}
-              />
+              <AiWhisperBox suggestion={suggestion} visible={visible} position={position} />
             </div>
           </div>
         </div>
 
         {/* Desktop Menu */}
         <div className="hidden lg:block fixed left-8 top-[20%] transform -translate-y-1/2 z-40">
-          <AllMenu
-            editor={editor}
-            onWordCount={toggleWordCount}
-            onRemoveBorder={toggleRemoveBorder}
-          />
+          <AllMenu editor={editor} onWordCount={toggleWordCount} onRemoveBorder={toggleRemoveBorder} />
         </div>
 
         {/* Mobile Menu */}
         <div className="lg:hidden fixed bottom-20 left-1/2 transform -translate-x-1/2 z-50">
           <div className="flex flex-col-reverse items-center">
-            <AllMenu
-              editor={editor}
-              onWordCount={toggleWordCount}
-              onRemoveBorder={toggleRemoveBorder}
-            />
+            <AllMenu editor={editor} onWordCount={toggleWordCount} onRemoveBorder={toggleRemoveBorder} />
           </div>
         </div>
       </div>
