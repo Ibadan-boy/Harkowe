@@ -3,7 +3,7 @@ import { collection, getDocs, setDoc, doc, deleteDoc, updateDoc, query, where } 
 import { db } from "../services/firebase";
 import { Link, useNavigate } from "react-router-dom";
 import { MoreVertical, Plus } from "lucide-react";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import generateSpectacularID from "../services/generateID";
 
 export default function AllWritings() {
@@ -12,27 +12,29 @@ export default function AllWritings() {
   const [openMenuId, setOpenMenuId] = useState(null); // Tracks which writing's menu is open
   const navigate = useNavigate();
 
-  // Fetch only writings belonging to the logged-in user
+  // Listen for auth state changes and fetch writings when user is logged in
   useEffect(() => {
-    const fetchWritings = async () => {
-      setLoading(true);
+    const auth = getAuth();
+
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        // User is not logged in
+        setWritings([]);
+        setLoading(false);
+        return;
+      }
+
       try {
-        const auth = getAuth();
-        const user = auth.currentUser;
+        setLoading(true);
 
-        if (!user) {
-          console.error("User not logged in");
-          setWritings([]);
-          return;
-        }
-
-        // Create a query to fetch documents where userId matches the logged-in user's UID
+        // Query Firestore to get only documents belonging to the current user
         const writingsQuery = query(
           collection(db, "documents"),
           where("userId", "==", user.uid)
         );
 
         const querySnapshot = await getDocs(writingsQuery);
+
         const docsData = querySnapshot.docs.map((doc) => {
           const data = doc.data();
           return {
@@ -48,32 +50,34 @@ export default function AllWritings() {
       } finally {
         setLoading(false);
       }
-    };
+    });
 
-    fetchWritings();
+    // Clean up the auth listener when component unmounts
+    return () => unsubscribe();
   }, []);
 
-  // Handle creating a new writing
+  // Create a new writing
   const handleNewWriting = async () => {
     try {
       const auth = getAuth();
       const user = auth.currentUser;
-
-      if (!user) {
-        console.error("User not logged in");
-        return;
-      }
+      if (!user) return;
 
       const newId = generateSpectacularID();
 
-      // Set a new document in Firestore with the logged-in user's UID
-      await setDoc(doc(db, "documents", newId), {
+      const newDoc = {
         title: "Untitled",
         content: "",
         updatedAt: new Date(),
         docID: newId,
-        userId: user.uid, // Link document to current user
-      });
+        userId: user.uid, // Link document to logged-in user
+      };
+
+      // Save to Firestore
+      await setDoc(doc(db, "documents", newId), newDoc);
+
+      // Immediately add to local state so it appears in the UI
+      setWritings((prev) => [{ id: newId, ...newDoc }, ...prev]);
 
       navigate(`/editor/${newId}`);
     } catch (error) {
@@ -81,7 +85,7 @@ export default function AllWritings() {
     }
   };
 
-  // Handle deleting a writing
+  // Delete a writing
   const handleDelete = async (id) => {
     try {
       await deleteDoc(doc(db, "documents", id));
@@ -91,7 +95,7 @@ export default function AllWritings() {
     }
   };
 
-  // Handle renaming a writing
+  // Rename a writing
   const handleRename = async (id) => {
     const newTitle = prompt("Enter new title:");
     if (newTitle) {
@@ -106,7 +110,7 @@ export default function AllWritings() {
     }
   };
 
-  // Handle sharing a writing
+  // Share a writing link
   const handleShare = (id) => {
     const link = `${window.location.origin}/editor/${id}`;
     navigator.clipboard.writeText(link).then(() => {
