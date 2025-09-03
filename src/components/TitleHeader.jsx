@@ -1,12 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 
-
 export default function TitleHeader({ title, setTitle, docID, isNew }) {
-  const [isEditing, setIsEditing] = useState(isNew); // Start editing if new
+  const [isEditing, setIsEditing] = useState(isNew);
   const inputRef = useRef(null);
 
   useEffect(() => {
-    // Only try to load a saved title if this is not a brand new doc
     if (!isNew) {
       const savedTitle = localStorage.getItem(`editor-title-${docID}`);
       if (savedTitle) {
@@ -26,17 +24,20 @@ export default function TitleHeader({ title, setTitle, docID, isNew }) {
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      inputRef.current.blur();
+      inputRef.current?.blur();
     }
   };
 
   const handleClick = () => {
     setIsEditing(true);
-    setTimeout(() => inputRef.current?.focus(), 0);
+    // Use requestAnimationFrame for better focus handling on mobile
+    requestAnimationFrame(() => {
+      inputRef.current?.focus();
+    });
   };
 
   return (
-    <div className="w-fit px-4 py-1">
+    <div className="w-fit px-2 sm:px-4 py-1">
       {isEditing ? (
         <input
           ref={inputRef}
@@ -46,12 +47,12 @@ export default function TitleHeader({ title, setTitle, docID, isNew }) {
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
           placeholder="Enter title..."
-          className="w-80 text-3xl font-semibold border-b border-gray-300 focus:outline-none focus:border-gray-500 bg-transparent"
+          className="w-full sm:w-80 text-2xl sm:text-3xl font-semibold border-b border-gray-300 focus:outline-none focus:border-gray-500 bg-transparent"
         />
       ) : (
         <h1
           onClick={handleClick}
-          className="text-3xl text-gray-600 titleHeading font-semibold cursor-pointer transition-colors"
+          className="text-2xl sm:text-3xl text-gray-600 titleHeading font-semibold cursor-pointer transition-colors"
         >
           {title}
         </h1>
