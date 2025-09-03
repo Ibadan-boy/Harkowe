@@ -1,4 +1,4 @@
-import { nanoid } from 'nanoid'; // install with npm install nanoid
+import { nanoid } from 'nanoid';
 
 function generateSpectacularID() {
   const adjectives = [

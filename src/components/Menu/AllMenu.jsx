@@ -12,15 +12,16 @@ export default function AllMenu({ editor, onWordCount, onRemoveBorder, enabled, 
   const [showMenu, setShowMenu] = useState(false);
   const navigate = useNavigate();
   const toggleMenu = () => setShowMenu((prev) => !prev);
+
   if (!editor) return null;
 
-  function goHome(){
-    console.log('Clicked Home')
-    navigate('/allwritings')
+  function goHome() {
+    console.log('Clicked Home');
+    navigate('/allwritings');
   }
 
   return (
-    <div className="relative">
+    <div className="relative z-50">
       <button
         onClick={toggleMenu}
         className="
@@ -35,37 +36,36 @@ export default function AllMenu({ editor, onWordCount, onRemoveBorder, enabled, 
         aria-label="Menu"
         title="Menu"
       >
-        <Menu />
+        <Menu size={24} />
       </button>
 
       {showMenu && (
         <div
           className="
             absolute 
-            bottom-full mb-4 
-            left-1/2 -translate-x-1/2
-            bg-white p-3 rounded-lg shadow-xl border border-gray-200
-            space-y-3 min-w-max z-40
-
-            lg:bottom-auto lg:top-0 lg:left-full lg:ml-4 lg:translate-x-0
+            top-0 mt-2 
+            left-full ml-2
+            bg-white p-2 rounded-lg shadow-md border border-gray-200
+            w-48 max-w-[90vw]
+            sm:w-56
+            lg:w-64
           "
         >
-          <div className="flex gap-1">
-            <GoHome onClick={goHome}/>
-            <AddNewWriting/>
+          <div className="flex flex-col space-y-1">
+            <GoHome onClick={goHome} />
+            <AddNewWriting />
+            <TextFormattingMenu editor={editor} />
+            <BlockTools editor={editor} />
+            <Insert editor={editor} />
+            <Utilities
+              onUndo={() => editor.chain().focus().undo().run()}
+              onRedo={() => editor.chain().focus().redo().run()}
+              onWordCount={onWordCount}
+              onRemoveBorder={onRemoveBorder}
+              enabled={enabled}
+              onToggle={onToggle}
+            />
           </div>
-          <TextFormattingMenu editor={editor} />
-          <BlockTools editor={editor} />
-          <Insert editor={editor} />
-          <Utilities
-            onUndo={() => editor.chain().focus().undo().run()}
-            onRedo={() => editor.chain().focus().redo().run()}
-            onWordCount={onWordCount}
-            onRemoveBorder={onRemoveBorder}
-            enabled={enabled}
-            onToggle={onToggle}
-          />
-          
         </div>
       )}
     </div>

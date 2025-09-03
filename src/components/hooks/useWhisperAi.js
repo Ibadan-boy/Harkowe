@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { debounce } from "lodash";
-import { askOpenRouter } from "../../services/openRouter";
+import { askAI } from "../../services/openRouter";
 
 export function useWhisperAI(editor, enabled) {
   const [suggestion, setSuggestion] = useState("");
@@ -14,8 +14,12 @@ export function useWhisperAI(editor, enabled) {
       if (!text || text.length < 20 || text === prevText) return;
 
       try {
-        const prompt = `Suggest a precise and helpful continuation or alternative. No comment about it, just your suggestion, straight to the point. If the reply is not a direct sentence for what I'm writing, I don't want it:\n\n${text}`;
-        const response = await askOpenRouter(prompt);
+        const prompt = `Suggest a precise and helpful continuation or alternative. No comment about it, just your suggestion, straight to the point. If the reply is not a direct sentence that continues what I'm writing, I don't want it:\n\n${text}`;
+        const response = await askAI(prompt);
+
+        const reply = await askAI("Write me a haiku about coding.");
+console.log(reply);
+
         
         setSuggestion(response.trim());
         setVisible(true);
@@ -25,6 +29,8 @@ export function useWhisperAI(editor, enabled) {
     }, 1000), // Reduced to 1s for better UX
     [editor]
   );
+
+
 
   // Insert suggestion at cursor
   const insertSuggestion = () => {

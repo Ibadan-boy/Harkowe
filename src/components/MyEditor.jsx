@@ -7,7 +7,6 @@ import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { useEffect, useCallback, useRef, useState } from 'react';
 import AllMenu from './Menu/AllMenu';
 import WordCount from './WordCount';
-import AiWhisperBox from './AiWhisperBox';
 import { useWhisperAI } from './hooks/useWhisperAi';
 import { debounce } from 'lodash';
 
@@ -18,7 +17,7 @@ const extensions = [
     allowBase64: true,
     HTMLAttributes: {
       class: 'max-w-full h-auto rounded-md shadow',
-      style: 'max-width: 400px;',
+      style: 'max-width: 100%; width: 100%;',
     },
   }),
   Link.configure({
@@ -33,11 +32,6 @@ const extensions = [
 ];
 
 const MyEditor = ({ title, docID }) => {
-  const editor = useEditor({
-    extensions,
-    content: '', // starts empty until Firestore loads
-  });
-
   const [showWordCount, setShowWordCount] = useState(false);
   const [removeBorder, setRemoveBorder] = useState(false);
   const [aiEnabled] = useState(true);
@@ -45,9 +39,8 @@ const MyEditor = ({ title, docID }) => {
   const editorRef = useRef(null);
   const typingTimeout = useRef(null);
 
-  const { suggestion, visible, triggerSuggestion, insertSuggestion } = useWhisperAI(editor, aiEnabled);
+  const localStorageKey = `draft-${docID}`;
 
-  // Save contents to Firestore (debounced)
   const saveToFirestore = useCallback(
     debounce(async (content) => {
       if (!docID) return;
@@ -70,42 +63,42 @@ const MyEditor = ({ title, docID }) => {
     [title, docID]
   );
 
-  // Load content from Firestore on mount/docID change
-  useEffect(() => {
-  async function loadFromFirestore() {
-    if (!docID || !editor) return;
+  const editor = useEditor({
+    extensions,
+    content: '',
+    onUpdate: ({ editor }) => {
+      const html = editor.getHTML();
+      localStorage.setItem(localStorageKey, html);
+      saveToFirestore(html);
+    },
+  });
 
-    try {
-      const snap = await getDoc(doc(db, 'documents', docID));
-      if (snap.exists()) {
-        const data = snap.data();
-        editor.commands.setContent(data.content || '');
-      } else {
-        console.warn(`Document ${docID} not found in Firestore`);
-      }
-    } catch (error) {
-      console.error('Error loading from Firestore', error);
-    }
-  }
+  const { suggestion, visible, triggerSuggestion, insertSuggestion } =
+    useWhisperAI(editor, aiEnabled);
 
-  loadFromFirestore();
-}, [docID, editor, title]);
-
-
-  // Save editor content to Firestore when updated
   useEffect(() => {
     if (!editor) return;
 
-    const saveContent = () => {
-      const html = editor.getHTML();
-      saveToFirestore(html);
-    };
+    const localDraft = localStorage.getItem(localStorageKey);
+    if (localDraft) {
+      editor.commands.setContent(localDraft);
+    }
 
-    editor.on('update', saveContent);
-    return () => editor.off('update', saveContent);
-  }, [editor, saveToFirestore]);
+    async function loadFromFirestore() {
+      if (!docID) return;
+      try {
+        const snap = await getDoc(doc(db, 'documents', docID));
+        if (snap.exists()) {
+          const data = snap.data();
+          editor.commands.setContent(data.content || '');
+        }
+      } catch (error) {
+        console.error('Error loading from Firestore', error);
+      }
+    }
+    loadFromFirestore();
+  }, [docID, editor]);
 
-  // Trigger AI suggestion after typing stops
   useEffect(() => {
     if (!editor) return;
 
@@ -115,7 +108,11 @@ const MyEditor = ({ title, docID }) => {
       typingTimeout.current = setTimeout(() => {
         const { from } = editor.state.selection;
         const coords = editor.view.coordsAtPos(from);
-        setPosition({ top: coords.top + 24, left: coords.left });
+        const editorRect = editorRef.current?.getBoundingClientRect();
+        setPosition({
+          top: coords.top - editorRect.top + 20, // Relative to editor
+          left: Math.min(coords.left - editorRect.left, editorRect.width - 100), // Prevent overflow
+        });
         if (triggerSuggestion) triggerSuggestion();
       }, 5000);
     };
@@ -124,7 +121,6 @@ const MyEditor = ({ title, docID }) => {
     return () => editor.off('update', handleTyping);
   }, [editor, triggerSuggestion]);
 
-  // Listen for Tab key to insert suggestion
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === 'Tab' && visible && suggestion) {
@@ -156,51 +152,79 @@ const MyEditor = ({ title, docID }) => {
             .tiptap-no-outline .ProseMirror {
               outline: none;
               border: none;
-              margin: 1.5rem;
+              margin: 1rem 0.5rem;
               font-family: 'Atkinson Hyperlegible', sans-serif;
-              font-size: 1.1rem;
-              line-height: 1.75;
+              font-size: 1rem;
+              line-height: 1.5;
               color: #374151;
+            }
+            @media (min-width: 640px) {
+              .tiptap-no-outline .ProseMirror {
+                margin: 1.5rem;
+                font-size: 1.1rem;
+                line-height: 1.75;
+              }
             }
           `,
         }}
       />
       <div className="min-h-screen transition-colors duration-300">
         <div className="max-w-5xl mx-auto mt-8">
-          <div className="max-w-5xl mx-auto relative">
+          <div className="w-full px-2 sm:px-4 md:px-6 lg:px-8 mx-auto relative">
             <div
-              className={`p-8 prose prose-lg focus:outline-none max-w-none dark:border-green-950/10 transition-all duration-200 relative
+              className={`p-2 sm:p-4 md:p-6 prose prose-base sm:prose-lg leading-tight focus:outline-none max-w-none dark:border-green-950/10 transition-all duration-200 relative
               ${removeBorder ? '' : 'border border-gray-300 shadow'}
               dark:prose-invert`}
               ref={editorRef}
             >
-              <EditorContent
-                editor={editor}
-                className="tiptap-no-outline [&_.ProseMirror]:min-h-[800px]"
-              />
-              <AiWhisperBox suggestion={suggestion} visible={visible} position={position} />
+              <div className="relative">
+                <EditorContent
+                  editor={editor}
+                  className="tiptap-no-outline [&_.ProseMirror]:min-h-[calc(100vh-12rem)]"
+                />
+                {visible && suggestion && (
+                  <div
+                    className="absolute pointer-events-none text-gray-400 italic text-sm"
+                    style={{
+                      top: position.top,
+                      left: position.left,
+                      maxWidth: 'calc(100% - 1rem)',
+                    }}
+                  >
+                    {suggestion}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
 
         {/* Desktop Menu */}
-        <div className="hidden lg:block fixed left-8 top-[20%] transform -translate-y-1/2 z-40">
-          <AllMenu editor={editor} onWordCount={toggleWordCount} onRemoveBorder={toggleRemoveBorder} />
+        <div className="hidden lg:block fixed left-4 top-[20%] transform -translate-y-1/2 z-40">
+          <AllMenu
+            editor={editor}
+            onWordCount={toggleWordCount}
+            onRemoveBorder={toggleRemoveBorder}
+          />
         </div>
 
         {/* Mobile Menu */}
-        <div className="lg:hidden fixed bottom-20 left-1/2 transform -translate-x-1/2 z-50">
-          <div className="flex flex-col-reverse items-center">
-            <AllMenu editor={editor} onWordCount={toggleWordCount} onRemoveBorder={toggleRemoveBorder} />
+        <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-800 shadow-md p-2">
+          <div className="flex justify-between items-center">
+            <AllMenu
+              editor={editor}
+              onWordCount={toggleWordCount}
+              onRemoveBorder={toggleRemoveBorder}
+            />
           </div>
         </div>
-      </div>
 
-      {showWordCount && (
-        <div className="fixed bottom-4 left-8 z-50 bg-gray-300 wordCount1 backdrop-blur px-3 py-1 rounded-md shadow text-sm text-gray-600">
-          <WordCount editor={editor} />
-        </div>
-      )}
+        {showWordCount && (
+          <div className="fixed bottom-2 left-2 right-2 z-50 bg-gray-300 backdrop-blur-sm px-3 py-1 rounded-md shadow text-sm text-gray-600 max-w-xs mx-auto">
+            <WordCount editor={editor} />
+          </div>
+        )}
+      </div>
     </>
   );
 };

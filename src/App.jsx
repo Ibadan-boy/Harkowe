@@ -3,7 +3,6 @@ import AllWritings from "./components/AllWritings";
 import AnimatedLanding from "./components/AnimatedLandingPage";
 import Login from "./components/Login";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import EditorPage from "./components/EditorPage";
 
 
 const route = createBrowserRouter([
@@ -25,7 +24,6 @@ export default function App() {
   
   return (
     <>
-      {/* <AllEditor/> */}
       <RouterProvider router={route}/>
     </>
   );
