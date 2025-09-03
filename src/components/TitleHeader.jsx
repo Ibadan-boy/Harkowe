@@ -28,11 +28,12 @@ export default function TitleHeader({ title, setTitle, docID, isNew }) {
     }
   };
 
-  const handleClick = () => {
+  const handleClick = (e) => {
+    e.preventDefault(); // Prevent any default navigation
     setIsEditing(true);
-    // Use requestAnimationFrame for better focus handling on mobile
     requestAnimationFrame(() => {
       inputRef.current?.focus();
+      if (!inputRef.current) console.log("Input ref not available on focus attempt");
     });
   };
 

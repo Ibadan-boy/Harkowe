@@ -10,21 +10,22 @@ export default function Header({ title, setTitle, docID, isNew }) {
   const navigate = useNavigate();
 
   function handleNav() {
-    navigate('/home');
+    navigate('/allwritings');
   }
 
   return (
     <header className="flex flex-col sm:flex-row py-4 px-6 sticky top-0 z-50 font-calm bg-white transition-colors duration-300">
       
       {/* Mobile Layout */}
-      <div onClick={handleNav} className="flex flex-col sm:hidden space-y-3 w-full">
+      <div className="flex flex-col sm:hidden space-y-3 w-full">
         <div className="flex items-center justify-center gap-4">
           <img
             src={imgHeader}
             alt="Harkowe company logo"
             className="w-9 h-9"
+            onClick={handleNav}
           />
-          <h1 className="text-2xl font-bold font-writing text-green-800 dark:text-green-300">
+          <h1 onClick={handleNav} className="text-2xl font-bold font-writing text-green-800 dark:text-green-300">
             <span className="text-green-800 dark:text-green-300">Har</span>
             <span className="text-gray-600 dark:text-gray-300">kowe</span>
           </h1>
