@@ -170,9 +170,9 @@ const MyEditor = ({ title, docID }) => {
       />
       <div className="min-h-screen transition-colors duration-300">
         <div className="max-w-5xl mx-auto mt-8">
-          <div className="w-full px-2 sm:px-4 md:px-6 lg:px-8 mx-auto relative">
+          <div className="w-full px-2 sm:px-4 md:px-6 lg:px-8 mx-auto relative sm:border-none">
             <div
-              className={`p-2 sm:p-4 md:p-6 prose prose-base sm:prose-lg leading-tight focus:outline-none max-w-none dark:border-green-950/10 transition-all duration-200 relative
+              className={`p-2 sm:p-4 md:p-6 sm:border-none prose prose-base sm:prose-lg leading-tight focus:outline-none max-w-none dark:border-green-950/10 transition-all duration-200 relative
               ${removeBorder ? '' : 'border border-gray-300 shadow'}
               dark:prose-invert`}
               ref={editorRef}
