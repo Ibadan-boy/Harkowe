@@ -9,9 +9,11 @@ import AllMenu from './Menu/AllMenu';
 import WordCount from './WordCount';
 import { useWhisperAI } from './hooks/useWhisperAi';
 import { debounce } from 'lodash';
+import { AISuggestion } from './SuggestionGhost';
 
 const extensions = [
   StarterKit,
+  AISuggestion,
   Image.configure({
     inline: true,
     allowBase64: true,
@@ -75,6 +77,14 @@ const MyEditor = ({ title, docID }) => {
 
   const { suggestion, visible, triggerSuggestion, insertSuggestion } =
     useWhisperAI(editor, aiEnabled);
+
+    useEffect(() => {
+  if (!editor) return
+  editor.extensionManager.extensions.find(e => e.name === 'aiSuggestion')
+    .options.suggestion = suggestion || null
+  editor.view.dispatch(editor.view.state.tr) // force re-render
+}, [suggestion, editor])
+
 
   useEffect(() => {
     if (!editor) return;
@@ -144,6 +154,12 @@ const MyEditor = ({ title, docID }) => {
 
   if (!editor) return null;
 
+  const requestSuggestion = async () => {
+    console.log('Requesting AI suggestion...');
+     if (!suggestion) return; // wait until hook sets it
+      insertSuggestion(); // this already calls editor.commands.insertContent
+  }
+
   return (
     <>
       <style
@@ -183,28 +199,36 @@ const MyEditor = ({ title, docID }) => {
                   className="tiptap-no-outline [&_.ProseMirror]:min-h-[calc(100vh-12rem)]"
                 />
                 {visible && suggestion && (
-                  <div
-                    className="absolute pointer-events-none text-gray-400 italic text-sm"
-                    style={{
-                      top: position.top,
-                      left: position.left,
-                      maxWidth: 'calc(100% - 1rem)',
-                    }}
-                  >
-                    {suggestion}
-                  </div>
-                )}
+  <div
+    className="
+      absolute pointer-events-none 
+      text-gray-400 italic text-sm 
+      max-w-[90%] sm:max-w-[75%] md:max-w-[60%] 
+      truncate
+      overflow-hidden
+      whitespace-nowrap
+    "
+    style={{
+      top: position.top,
+      left: Math.min(position.left, editorRef.current?.offsetWidth - 100 || 0),
+    }}
+  >
+    {suggestion}
+  </div>
+)}
+
               </div>
             </div>
           </div>
         </div>
 
         {/* Desktop Menu */}
-        <div className="hidden lg:block fixed left-4 top-[20%] transform -translate-y-1/2 z-40">
+        <div className="hidden lg:block fixed left-4 top-[20%] transform -translate-y-1/2 z-40 min-w-[5rem]">
           <AllMenu
             editor={editor}
             onWordCount={toggleWordCount}
             onRemoveBorder={toggleRemoveBorder}
+            onToggle={requestSuggestion}
           />
         </div>
 

@@ -17,8 +17,8 @@ export function useWhisperAI(editor, enabled) {
         const prompt = `Suggest a precise and helpful continuation or alternative. No comment about it, just your suggestion, straight to the point. If the reply is not a direct sentence that continues what I'm writing, I don't want it:\n\n${text}`;
         const response = await askAI(prompt);
 
-        const reply = await askAI("Write me a haiku about coding.");
-console.log(reply);
+        // const reply = await askAI("Write me a haiku about coding.");
+        // console.log(reply);
 
         
         setSuggestion(response.trim());
@@ -26,7 +26,7 @@ console.log(reply);
       } catch (err) {
         console.error("Whisper AI Error:", err);
       }
-    }, 1000), // Reduced to 1s for better UX
+    }, 6000), // Reduced to 1s for better UX
     [editor]
   );
 

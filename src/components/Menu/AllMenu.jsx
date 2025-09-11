@@ -46,12 +46,12 @@ export default function AllMenu({ editor, onWordCount, onRemoveBorder, enabled, 
             top-0 mt-2 
             left-full ml-2
             bg-white p-2 rounded-lg shadow-md border border-gray-200
-            w-48 max-w-[90vw]
+            min-w-[20rem]
             sm:w-56
             lg:w-64
           "
         >
-          <div className="flex flex-col space-y-1">
+          <div className="flex flex-col space-y-1 allMenu">
             <GoHome onClick={goHome} />
             <AddNewWriting />
             <TextFormattingMenu editor={editor} />

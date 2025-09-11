@@ -18,10 +18,10 @@ export async function createNewFile(title = 'Untitled', content = '') {
       docID,
     });
 
-    console.log(`✅ New file created with ID: ${docID}`);
+    console.log(`New file created with ID: ${docID}`);
     return docID;
   } catch (error) {
-    console.error('❌ Error creating new file:', error);
+    console.error('Error creating new file:', error);
     throw error;
   }
 }
