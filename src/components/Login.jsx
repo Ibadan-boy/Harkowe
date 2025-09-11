@@ -7,6 +7,7 @@ import {
   createUserWithEmailAndPassword
 } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { EyeClosed, Eye } from "lucide-react";
 
 export default function Login() {
   const [email, setEmail] = useState("");
