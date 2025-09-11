@@ -29,7 +29,7 @@ export default function TitleHeader({ title, setTitle, docID, isNew }) {
   };
 
   const handleClick = (e) => {
-    e.preventDefault(); // Prevent any default navigation
+    e.preventDefault();
     setIsEditing(true);
     requestAnimationFrame(() => {
       inputRef.current?.focus();

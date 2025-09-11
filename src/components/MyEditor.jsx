@@ -220,10 +220,14 @@ const MyEditor = ({ title, docID }) => {
         </div>
 
         {showWordCount && (
-          <div className="fixed bottom-2 left-2 right-2 z-50 bg-gray-300 backdrop-blur-sm px-3 py-1 rounded-md shadow text-sm text-gray-600 max-w-xs mx-auto">
+          <div className="fixed wordcount bottom-4 left-4 z-50 
+                          bg-white/80 backdrop-blur-md px-4 py-2 rounded-lg 
+                          shadow-lg text-sm text-gray-700 font-medium 
+                          border border-gray-200">
             <WordCount editor={editor} />
-          </div>
-        )}
+          </div>)}
+
+
       </div>
     </>
   );

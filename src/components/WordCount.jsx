@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect } from "react";
+import { useDarkMode } from "./ThemeChanger";
 
 export default function WordCount({ editor }){
 
     const [wordCount, setWordCount] = useState(0);
     const [ showOtherCounts, setShowOtherCounts ] = useState(false);
+    const { toggleTheme } = useDarkMode();
 
     const toggleOtherCounts = () => setShowOtherCounts((prev) => !prev);
 
@@ -25,8 +27,8 @@ export default function WordCount({ editor }){
             <span className="font-semibold">{wordCount} words</span>
         </div>
 
-        { showOtherCounts && <div className="wordCount1">
-            <div className="text-sm text-gray-600">
+        { showOtherCounts && <div className="wordCount1 ">
+            <div className="text-sm text-gray-600 bg-gray-400">
                 Character Count: <span className="font-semibold">{editor.getText().length}</span>
             </div>
             <div className="text-sm text-gray-600">

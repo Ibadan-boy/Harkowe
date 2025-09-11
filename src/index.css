@@ -85,7 +85,11 @@ html.dark .titleHeading {
   color: white;
 }
 
-html.dark .wordCount1{
+/* html.dark .wordCount1{
   background-color: #064e3b;
   color: white;
 }
+
+html.dark .wordCount{
+  background-color: #064e3b;
+} */
