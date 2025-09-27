@@ -15,6 +15,7 @@ export default function Login() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleGoogle = async () => {
@@ -39,6 +40,10 @@ export default function Login() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const showPasswordToggle = () => {
+    setShowPassword(!showPassword);
   };
 
   const handleEmailAuth = async (e) => {
@@ -99,14 +104,28 @@ export default function Login() {
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-            <input
-              type="password"
+
+            <div className="flex gap-2">
+              <input
+              type={showPassword ? "text" : "password"}
               placeholder="Password"
               className="border-2 border-gray-300 rounded-lg p-3 w-full"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
+            <span
+              className="right-2 transform cursor-pointer m-auto"
+              onClick={showPasswordToggle}
+            >
+              {showPassword ? (
+                <EyeClosed className="text-green-500" />
+              ) : (
+                <Eye className="text-green-500" />
+              )}
+            </span>
+            </div>
+            
             <button
               type="submit"
               className="bg-green-500 text-white py-3 rounded-lg font-medium hover:bg-green-600 transition"

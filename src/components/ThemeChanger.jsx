@@ -1,7 +1,7 @@
 // src/context/ThemeContext.js
 import { createContext, useState, useContext, useEffect } from 'react';
 
-const ThemeToggle = createContext();
+const ThemeToggle = createContext(); // Create a context object for theme toggling
 
 export const ThemeChanger = ({ children }) => {
   const [darkTheme, setDarkTheme] = useState(() => {

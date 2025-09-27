@@ -1,43 +1,9 @@
-import generateSpectacularID from "../../services/generateID";
-import { db } from '../../services/firebase';
-import { doc, setDoc } from 'firebase/firestore';
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import handleNewWriting from "../../services/writingUtils"; // Adjust path as needed
 
-// Function to create a new Firestore document
-export async function createNewFile(title = 'Untitled', content = '') {
-  try {
-    const docID = generateSpectacularID();
-    const docRef = doc(db, 'documents', docID);
-
-    await setDoc(docRef, {
-      title: title || 'Untitled',
-      content,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      docID,
-    });
-
-    console.log(`New file created with ID: ${docID}`);
-    return docID;
-  } catch (error) {
-    console.error('Error creating new file:', error);
-    throw error;
-  }
-}
-
-// Component with the "Add New" button
 export default function AddNewWriting() {
   const navigate = useNavigate();
-
-  const handleCreateFile = async () => {
-    try {
-      const newDocID = await createNewFile('', ''); // start with empty title
-      navigate(`/editor/${newDocID}`); // redirect to editor
-    } catch (error) {
-      console.error("Error creating file:", error);
-    }
-  };
 
   return (
     <button
@@ -51,7 +17,7 @@ export default function AddNewWriting() {
         shadow-lg border border-gray-200
       "
       title="New Document"
-      onClick={handleCreateFile}
+      onClick={() => handleNewWriting(navigate)}
     >
       <Plus strokeWidth={2} size={20} />
     </button>

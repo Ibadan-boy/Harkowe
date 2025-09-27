@@ -4,7 +4,7 @@ import { db } from "../services/firebase";
 import { Link, useNavigate } from "react-router-dom";
 import { MoreVertical, Plus } from "lucide-react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import generateSpectacularID from "../services/generateID";
+import handleNewWriting from "../services/writingUtils";
 
 export default function AllWritings() {
   const [writings, setWritings] = useState([]);
@@ -57,31 +57,42 @@ export default function AllWritings() {
   }, []);
 
   // Create a new writing
-  const handleNewWriting = async () => {
+  // const handleNewWriting = async () => {
+  //   try {
+  //     const auth = getAuth();
+  //     const user = auth.currentUser;
+  //     if (!user) return;
+
+  //     const newId = generateSpectacularID();
+
+  //     const newDoc = {
+  //       title: "Untitled",
+  //       content: "",
+  //       updatedAt: new Date(),
+  //       docID: newId,
+  //       userId: user.uid, // Link document to logged-in user
+  //     };
+
+  //     // Save to Firestore
+  //     await setDoc(doc(db, "documents", newId), newDoc);
+
+  //     // Immediately add to local state so it appears in the UI
+  //     setWritings((prev) => [{ id: newId, ...newDoc }, ...prev]);
+
+  //     navigate(`/editor/${newId}`);
+  //   } catch (error) {
+  //     console.error("Error creating new writing:", error);
+  //   }
+  // };
+
+ const onNewWriting = async () => {
     try {
-      const auth = getAuth();
-      const user = auth.currentUser;
-      if (!user) return;
-
-      const newId = generateSpectacularID();
-
-      const newDoc = {
-        title: "Untitled",
-        content: "",
-        updatedAt: new Date(),
-        docID: newId,
-        userId: user.uid, // Link document to logged-in user
-      };
-
-      // Save to Firestore
-      await setDoc(doc(db, "documents", newId), newDoc);
-
-      // Immediately add to local state so it appears in the UI
-      setWritings((prev) => [{ id: newId, ...newDoc }, ...prev]);
-
-      navigate(`/editor/${newId}`);
+      const newDoc = await handleNewWriting(navigate);
+      if (newDoc) {
+        setWritings((prev) => [newDoc, ...prev]);
+      }
     } catch (error) {
-      console.error("Error creating new writing:", error);
+      // Error is already logged in handleNewWriting
     }
   };
 
@@ -133,7 +144,7 @@ export default function AllWritings() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-green-300">My Writings</h1>
         <button
-          onClick={handleNewWriting}
+          onClick={onNewWriting}
           className="flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg transition"
         >
           <Plus size={18} />
@@ -203,3 +214,4 @@ export default function AllWritings() {
     </div>
   );
 }
+

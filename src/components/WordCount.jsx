@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
-import { useDarkMode } from "./ThemeChanger";
 import { ChevronDown } from "lucide-react";
 
 export default function WordCount({ editor }){
 
     const [wordCount, setWordCount] = useState(0);
     const [ showOtherCounts, setShowOtherCounts ] = useState(false);
-    const { toggleTheme } = useDarkMode();
 
     const toggleOtherCounts = () => setShowOtherCounts((prev) => !prev);
 
@@ -26,7 +24,7 @@ export default function WordCount({ editor }){
         <>
         <div onClick={toggleOtherCounts} className="text-sm wordCount1 cursor-pointer text-gray-600">
             <span className="font-semibold">{wordCount} words</span>
-            <ChevronDown className={`inline-block mr-1 hover:bg-gray-400 rounded-lg transition-transform ${showOtherCounts ? 'transform rotate-180 hover:bg-gray-400 rounded-lg' : ''}`} size={14} />
+            <ChevronDown className={`inline-block mr-1 hover:bg-gray-300 rounded-lg transition-transform ${showOtherCounts ? 'transform rotate-180 hover:bg-gray-300 rounded-lg' : ''}`} size={14} />
         </div>
 
         { showOtherCounts && <div className="wordCount1 ">
