@@ -199,23 +199,22 @@ const MyEditor = ({ title, docID }) => {
                   className="tiptap-no-outline [&_.ProseMirror]:min-h-[calc(100vh-12rem)]"
                 />
                 {visible && suggestion && (
-  <div
-    className="
-      absolute pointer-events-none 
-      text-gray-400 italic text-sm 
-      max-w-[90%] sm:max-w-[75%] md:max-w-[60%] 
-      truncate
-      overflow-hidden
-      whitespace-nowrap
-    "
-    style={{
-      top: position.top,
-      left: Math.min(position.left, editorRef.current?.offsetWidth - 100 || 0),
-    }}
-  >
-    {suggestion}
-  </div>
-)}
+                <div
+                  className="
+                    absolute pointer-events-none 
+                    text-gray-400 italic text-sm 
+                    max-w-[90%] sm:max-w-[75%] md:max-w-[60%] 
+                    truncate
+                    overflow-hidden
+                    whitespace-nowrap
+                  "
+                  style={{
+                    top: position.top,
+                    left: Math.min(position.left, editorRef.current?.offsetWidth - 100 || 0),
+                  }}
+                >
+                  {suggestion}
+                </div>)}
 
               </div>
             </div>
@@ -233,7 +232,7 @@ const MyEditor = ({ title, docID }) => {
         </div>
 
         {/* Mobile Menu */}
-        <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-800 shadow-md p-2">
+        <div className="lg:hidden fixed top-0 left-0 right-0 z-50 shadow-md p-2">
           <div className="flex justify-between items-center">
             <AllMenu
               editor={editor}
