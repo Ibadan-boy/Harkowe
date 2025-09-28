@@ -54,7 +54,7 @@ export async function askAI(prompt) {
         "X-Title": "YOUR_APP_NAME",
       },
       body: JSON.stringify({
-        model: "cognitivecomputations/dolphin3.0-r1-mistral-24b:free",
+        model: "x-ai/grok-4-fast:free",
         messages: [{ role: "user", content: prompt }],
       }),
     });
